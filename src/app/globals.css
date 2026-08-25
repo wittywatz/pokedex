@@ -84,6 +84,12 @@
       hover:shadow-lg motion-reduce:transition-none motion-reduce:hover:translate-y-0;
   }
 
+  /* Two lines' worth, reserved, so a wrapped name cannot make one tile taller
+     than the rest of its row. */
+  .tile-name {
+    @apply min-h-10 text-center text-sm font-semibold text-balance text-ink;
+  }
+
   /* Anything tappable clears the 44px touch minimum without visual bulk. */
   .tap-target {
     @apply inline-flex min-h-11 items-center;

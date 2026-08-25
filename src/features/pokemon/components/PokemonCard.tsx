@@ -15,7 +15,7 @@ export function PokemonCard({
   return (
     <Link
       href={pokemonRoutes.detail(pokemon.id, fromPage)}
-      className="tile focus-ring group p-5"
+      className="tile focus-ring group h-full p-5"
     >
       <PokemonArtwork
         pokemonId={pokemon.id}
@@ -25,9 +25,7 @@ export function PokemonCard({
         className="h-24 w-24 object-contain transition group-hover:scale-105 motion-reduce:transition-none motion-reduce:group-hover:scale-100"
       />
       <span className="label">{formatPokedexNumber(pokemon.id)}</span>
-      <span className="text-sm font-semibold text-ink">
-        {formatName(pokemon.name)}
-      </span>
+      <span className="tile-name">{formatName(pokemon.name)}</span>
     </Link>
   );
 }
