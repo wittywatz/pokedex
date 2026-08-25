@@ -14,7 +14,7 @@ npm run dev
 Then open [http://localhost:3000](http://localhost:3000).
 
 ```bash
-npm test                     # vitest, 89 unit tests
+npm test                     # vitest
 npm run test:watch           # vitest in watch mode
 npm run lint                 # eslint, including import-boundary rules
 npm run typecheck            # tsc --noEmit
@@ -34,8 +34,8 @@ All data comes from [PokéAPI](https://pokeapi.co), from four endpoints:
 
 A single `?limit=151` call would pull the original generation in one request.
 This uses the same endpoint with `PAGE_SIZE` as the limit and the offset walking
-the register, so the list covers all 1,351 Pokémon rather than stopping at Mew
-and no one request grows with the size of the register. The offset is an API
+the register, so the list covers every Pokémon rather than stopping at Mew and
+no one request grows with the size of the register. The offset is an API
 detail: the app's own URLs count pages, and `api.ts` converts one to the other
 at the moment it builds the request.
 
@@ -186,7 +186,7 @@ PokéAPI. 308 rather than 307 because the rule cannot change for a given URL, so
 the redirect is safe for a browser to cache.
 
 Above the range, the answer is in the response: `?page=99999` is only wrong once
-`count` says there are 76 pages, so the list route compares `page` against
+`count` says how many pages there are, so the list route compares `page` against
 `totalPages` and redirects to the last real page. By then the shell has already
 streamed — `loading.tsx` puts the route behind a Suspense boundary — so Next
 falls back to a client-side redirect rather than an HTTP one. Moving it earlier
@@ -215,7 +215,7 @@ sites.
 the fields we read; `src/lib/http.ts` parses every response against one. A
 renamed field upstream throws a `SchemaError` naming the field, at the boundary,
 instead of surfacing as an `undefined` inside a component. Unknown fields are
-stripped, so the 109-entry `moves` array never reaches the client.
+stripped, so the `moves` array never reaches the client.
 
 **Responses are cached for a day** (`revalidate: 86400`). The Pokédex does not
 change, and the detail page's three calls are each cached and deduped within a
@@ -247,10 +247,10 @@ the user sees is the not-found entry either way.
 
 ## Tests
 
-`npm test` runs 89 unit tests, beside the modules they cover. No network and no
-test server: almost everything under test is a pure function. The two that are
-not are exercised directly — `http.ts` with `fetch` stubbed, and the middleware
-by handing it a `NextRequest` and reading the response it returns.
+Tests sit beside the modules they cover, and there is no network and no test
+server: almost everything under test is a pure function. The two that are not
+are exercised directly — `http.ts` with `fetch` stubbed, and the middleware by
+handing it a `NextRequest` and reading the response it returns.
 
 | Suite                | Covers                                                                                                                   |
 | -------------------- | ------------------------------------------------------------------------------------------------------------------------ |
