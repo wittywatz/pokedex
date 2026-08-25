@@ -16,9 +16,7 @@ function StageBody({ stage }: { stage: EvolutionStage }) {
         className="h-20 w-20 object-contain sm:h-24 sm:w-24"
       />
       <span className="label">{formatPokedexNumber(stage.id)}</span>
-      <span className="text-sm font-semibold text-ink">
-        {formatName(stage.name)}
-      </span>
+      <span className="tile-name">{formatName(stage.name)}</span>
     </>
   );
 }
