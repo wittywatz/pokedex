@@ -1,0 +1,179 @@
+@import "tailwindcss";
+
+/* -------------------------------------------------------------------------- */
+/* Design tokens                                                              */
+/* -------------------------------------------------------------------------- */
+
+@theme {
+  /* Neutrals: cool grey paper, near-black ink. */
+  --color-paper: #f2f3f5;
+  --color-surface: #ffffff;
+  --color-panel: #14161a;
+  --color-ink: #14161a;
+  --color-ink-soft: #3f444c;
+  --color-muted: #6b7280;
+  --color-rule: #dde0e4;
+  --color-rule-strong: #b9bec5;
+  --color-inert: #e9ebee;
+  --color-inert-ink: #a2a8b0;
+
+  /* Failure states. */
+  --color-danger: #b4442e;
+  --color-danger-ink: #8a2f1c;
+  --color-danger-surface: #fbf0ed;
+  --color-danger-rule: #e6c9c2;
+
+  --font-display: var(--font-archivo);
+  --font-sans: var(--font-space-grotesk);
+  --font-mono: var(--font-jetbrains-mono);
+
+  /* Small caps labels read as instrument markings, so they need real tracking. */
+  --text-label: 0.6875rem;
+  --tracking-label: 0.18em;
+  --tracking-heading: 0.22em;
+
+  /* The oversized Pokedex numeral behind the hero artwork. */
+  --text-numeral: 11rem;
+  --text-numeral-lg: 17rem;
+
+  /*
+   * Display sizes are fluid rather than stepped: a heavy uppercase face
+   * overflows a narrow viewport long before a breakpoint would catch it, and
+   * names run from "Mew" to "Crabominable".
+   */
+  --text-display-hero: clamp(2.25rem, 9vw, 3.75rem);
+  --text-display-section: clamp(1.75rem, 6.5vw, 2.25rem);
+  --text-display-name: clamp(2.25rem, 10vw, 4.5rem);
+
+  /* Display headings set tighter than one, so the lines lock together. */
+  --leading-display: 0.9;
+  --leading-title: 0.95;
+
+  /* Stat segments: a hairline radius and the gap between ticks. */
+  --radius-tick: 1px;
+  --spacing-tick: 3px;
+}
+
+/* -------------------------------------------------------------------------- */
+/* Component classes                                                          */
+/* -------------------------------------------------------------------------- */
+
+@layer components {
+  /* Mono small-caps marking used for eyebrows, field labels and section heads. */
+  .label {
+    @apply font-mono text-label uppercase tracking-label text-muted;
+  }
+
+  .label-lg {
+    @apply font-mono text-label uppercase tracking-heading text-muted;
+  }
+
+  .display-title {
+    @apply font-display font-black uppercase tracking-tight text-ink;
+  }
+
+  /* White card on the paper background. */
+  .panel {
+    @apply rounded-2xl border border-rule bg-surface p-6 sm:p-8;
+  }
+
+  /* Every clickable tile: cards on the list, stages in the evolution line. */
+  .tile {
+    @apply flex flex-col items-center gap-2 rounded-2xl border border-rule
+      bg-surface transition hover:-translate-y-1 hover:border-rule-strong
+      hover:shadow-lg motion-reduce:transition-none motion-reduce:hover:translate-y-0;
+  }
+
+  /* Anything tappable clears the 44px touch minimum without visual bulk. */
+  .tap-target {
+    @apply inline-flex min-h-11 items-center;
+  }
+
+  .focus-ring {
+    @apply focus-visible:outline-2 focus-visible:outline-offset-2
+      focus-visible:outline-ink;
+  }
+
+  .button {
+    @apply rounded-lg bg-ink px-5 py-2.5 font-mono text-xs uppercase
+      tracking-label text-white transition hover:bg-ink-soft;
+  }
+
+  /*
+   * Pagination pinned to the bottom of the viewport: reachable without
+   * scrolling the grid, and still in place after the page changes. Bleeds to
+   * the container edges so the rule reads as a real bar.
+   */
+  .pagination-bar {
+    @apply sticky bottom-0 z-10 -mx-6 flex items-center justify-between gap-4
+      border-t border-rule px-6 py-4;
+    background-color: color-mix(in srgb, var(--color-paper) 88%, transparent);
+    backdrop-filter: blur(8px);
+    padding-bottom: calc(1rem + env(safe-area-inset-bottom));
+  }
+
+  /* One definition of the card grid so a loading skeleton laid out with the
+     same class cannot drift from the real thing. */
+  .card-grid {
+    @apply grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6;
+  }
+
+  .skeleton {
+    @apply animate-pulse rounded bg-rule;
+  }
+
+  /* Stat row: label, segment track, value. Widths are fixed so the tracks of
+     every row line up whatever the label reads. */
+  .stat-row {
+    @apply grid items-center gap-2 sm:gap-3;
+    /* Narrower label and value columns on phones leave the segment track
+       usable; the tick gap tightens to match. */
+    grid-template-columns: 2.75rem 1fr 2.25rem;
+  }
+
+  @media (width >= 40rem) {
+    .stat-row {
+      grid-template-columns: 4.5rem 1fr 2.5rem;
+    }
+  }
+
+  /*
+   * Type accent. Each Pokemon's colour comes from the API at request time, so
+   * it arrives as the --accent custom property rather than a static class.
+   */
+  .accent-bg {
+    background-color: var(--accent);
+  }
+
+  .accent-border {
+    border-color: var(--accent);
+  }
+}
+
+/* -------------------------------------------------------------------------- */
+/* Motion                                                                     */
+/* -------------------------------------------------------------------------- */
+
+/* Artwork settles into the hero on load - once, quietly. */
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@layer components {
+  .animate-rise {
+    animation: rise 420ms cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-rise {
+    animation: none;
+  }
+}
